@@ -1,0 +1,25 @@
+@import "./commons";
+
+main {
+  background-color: $lightColor;  
+  article.exercise-ts {
+    @include article-style;
+    section {
+      @include section-style;
+      pre {
+        @include box-code-style;
+        overflow-x: scroll;
+        padding: 1em;
+      }
+    }
+    h3 {
+      padding: 1em;
+      background-color: $secundaryColor;
+      color: white;
+      border-radius: 16px;
+      span {
+        color: $accentColor;
+      }
+    }
+  }
+}

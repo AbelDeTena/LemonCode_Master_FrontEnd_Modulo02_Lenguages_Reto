@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02 Languages</title>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Laboratorio 02</h1>
+        <h2>Módulo Languages</h2>
+      </div>
+      <h2>Ejercicios retos</h2>
+    </header>
+    <main>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Trazas por consola:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>Ejecuta el siguiente código:</p>
+          <pre><code class="language-typescript">const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const showMessage = async ([time, message]) => {
+  await delay(time);
+  console.log(message);
+};
+
+const triggers = [
+  async () => await showMessage([200, "third"]),
+  async () => await showMessage([100, "second"]),
+];
+
+const run = triggers => {
+  console.log("first");
+  triggers.forEach(t => t());
+};
+
+run(triggers);</code></pre>
+          <p>Las trazas resultante en consola son:</p>
+          <pre><code class="language-typescript">
+            first;
+            second;
+            third;</code></pre>
+          <p>
+            El ejercicio consiste en reordenar las trazas para que se muestren
+            invertidas, es decir, con el siguiente orden:
+          </p>
+          <pre><code class="language-typescript">
+            third;
+            second;
+            first;</code></pre>
+          <p>Pero para ello <b>tan solo podrás modificar la función run</b>.</p>
+          <p>
+            Queda prohibido modificar cualquier otro código asi como el
+            contenido de triggers.
+          </p>
+          <pre><code class="language-typescript">const delay = (ms: number): Promise&lt;void&gt; =>
+                new Promise((resolve) => setTimeout(resolve, ms));
+              
+const showMessage = async ([time, message]: [
+  number,
+  string
+]): Promise&lt;void&gt; => {
+  await delay(time);
+  console.log(message);
+};
+
+const triggers: (() => Promise&lt;void&gt;)[] = [
+  async () => await showMessage([200, "third"]),
+  async () => await showMessage([100, "second"]),
+];
+
+const run = async (triggers: (() => Promise&lt;void&gt;)[]): Promise&lt;void&gt; => {
+  showMessage([400, "first"]);
+  for (const trigger of triggers) {
+    await trigger();
+  }
+};
+
+run(triggers);
+              </code></pre>
+          <button id="triggerbutton">Mostrar por consola</button>
+        </section>
+      </article>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Deep Access:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>
+            Implementa un mecanismo deepGet para acceder en profundidad a
+            objetos anidados, de modo que podamos recuperar una propiedad en
+            cualquiera de sus niveles. Mira a continuación el comportamiento que
+            debería seguir:
+          </p>
+          <pre><code class="language-typescript">
+            const myObject = {
+            a: 1,
+            b: {
+              c: null,
+              d: {
+                e: 3,
+                f: {
+                  g: "bingo",
+                }
+              }
+            }
+          };
+          
+          const deepGet = ¿..?
+          
+          console.log(deepGet(myObject, "x")); // undefined
+          console.log(deepGet(myObject, "a")); // 1
+          console.log(deepGet(myObject, "b")); // { c: null, d: {....}}
+          console.log(deepGet(myObject, "b", "c")); // null
+          console.log(deepGet(myObject, "b", "d", "f", "g")); // bingo
+          console.log(deepGet(myObject));  // {a: 1, b: {...}}
+          </code></pre>
+          <pre><code class="language-typescript">
+            interface AnyObject {
+            [key: string]: any;
+          }
+          
+          const myObject: AnyObject = {
+            a: 1,
+            b: {
+              c: null,
+              d: {
+                e: 3,
+                f: {
+                  g: "bingo",
+                },
+              },
+            },
+          };
+          
+          const deepGet = (object: AnyObject, ...keys: string[]): any => {
+            for (const key of keys) {
+              if (key in object) {
+                object = object[key];
+              } else {
+                return undefined;
+              }
+            }
+            return object;
+          };
+          </code></pre>
+          <button id="deepAccessbutton">Mostrar por consola</button>
+        </section>
+      </article>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Deep Set:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>
+            Ahora implementa el complementario, deepSet, que permita guardar
+            valores en profundidad. Su comportamiento debería ser:
+          </p>
+          <pre><code class="language-typescript">
+            const myObject = {};
+
+const deepSet = ¿..?
+
+deepSet(1, myObject, "a", "b");
+console.log(JSON.stringify(myObject));  // {a: { b: 1}}
+deepSet(2, myObject, "a", "c");
+console.log(JSON.stringify(myObject));  // {a: { b: 1, c: 2}}
+deepSet(3, myObject, "a");
+console.log(JSON.stringify(myObject));  // {a: 3}
+deepSet(4, myObject);
+console.log(JSON.stringify(myObject));  // Do nothing // {a: 3}
+          </code></pre>
+          <pre><code class="language-typescript">
+//interfaz recursiva
+interface MyObject {
+  [key: string]: number | MyObject;
+}
+
+const myObjectSet: MyObject = {};
+
+const deepSet = (value: number, object: MyObject, ...keys: string[]) => {
+  if (!keys.length) {
+    return console.log("Do nothing");
+  } else {
+    const lastKey = keys.pop();
+
+    keys.reduce((currentObject: MyObject, key: string) => {
+      if (!(key in currentObject)) {
+        currentObject[key] = {} as MyObject;
+      }
+      return currentObject[key] as MyObject;
+    }, object)[lastKey as string] = value;
+  }
+};
+          </code></pre>
+          <button id="deepSetButton">Mostrar por consola</button>
+        </section>
+      </article>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Flatten Array:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>
+            Dado un array multidimensional, construye una función inmutable que
+            devuelva el mismo array aplanado, esto es, con un único nivel de
+            profundidad. Por ejemplo, el siguiente array:
+          </p>
+          <pre><code class="language-typescript">
+const sample = [1, [2, 3], [[4], [5, 6, [7, 8, [9]]]]];</code></pre>
+          <p>
+            ¿Has resuelto el ejercicio anterior? Suponiendo que los arrays
+            multidimensionales del ejercicio anterior no serán de naturaleza
+            mixta, es decir, sus elementos siempre serán del mismo tipo ¿Serías
+            capaz de proporcionar un tipado adecuado a dicha función de
+            aplanamiento?
+          </p>
+          <pre><code class="language-typescript">
+//Alias recursivo con tipado generico
+type Lista&lt;T&gt; = (T | Lista&lt;T&gt;)[];
+
+const sample: Lista&lt;number&gt; = [1, [2, 3], [[4], [5, 6, [7, 8, [9]]]]];
+
+//funcion recursiva con tipado generico
+function flattenArray&lt;T&gt;(array: Lista&lt;T&gt;): T[] {
+  const result: T[] = [];
+
+  array.forEach((item) => {
+    if (Array.isArray(item)) {
+      result.push(...flattenArray(item));
+    } else {
+      result.push(item);
+    }
+  });
+
+  return result;
+            }</code></pre>
+          <button id="flattenButton">Mostrar por consola</button>
+        </section>
+      </article>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Memorized:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>
+            Implementa un mecanismo de _memorización_ para funciones costosas y
+            tipalo con TypeScript. La memorización optimiza sucesivas llamadas
+            del siguiente modo:
+          </p>
+          <pre><code class="language-typescript">
+  const expensiveFunction = () => {
+  console.log("Una única llamada");
+  return 3.1415;
+}
+
+const memorize = ¿..?;
+
+const memoized = memorize(expensiveFunction);
+console.log(memorized()); // Una única llamada // 3.1415
+console.log(memorized()); // 3.1415
+console.log(memorized()); // 3.1415</code></pre>
+          <p>
+            Puedes suponer que las funciones que van a ser memoizadas no llevan
+            argumentos y tampoco devuelven valores `null` o `undefined`.
+            ¿Podrías hacerlo en una sola línea?
+          </p>
+          <pre><code class="language-typescript">
+  const memorize = (f: () => number): number => {let value;return value ? value : (value = f());};</code></pre>
+          <p>
+            Contempla ahora la posibilidad de que la función a memorizar pueda
+            tener argumentos. Por simplicidad supongamos sólo argumentos
+            primitivos: `string`, `number` o `boolean` y que no sean
+            `undefined`. ¿Podrías hacer una versión aceptando argumentos? ¿Cómo
+            la tiparías con TS? Un ejemplo de comportamiento podría ser:
+          </p>
+          <pre><code class="language-typescript">
+  let count = 0; // Comprobacion de nº de ejecuciones
+const repeatText = (repetitions: number, text: string): string =>
+  (count++, `${text} `.repeat(repetitions).trim())
+
+const memoize = ¿..?;
+
+const memoizedGreet = memorize(repeatText);
+
+console.log(memorizedGreet(1, "pam"));   // pam
+console.log(memorizedGreet(3, "chun"));  // chun chun chun
+console.log(memorizedGreet(1, "pam"));   // pam
+console.log(memorizedGreet(3, "chun"));  // chun chun chun
+console.log(count);
+ </code></pre>
+          <pre><code class="language-typescript">
+  let count: number = 0; // Comprobacion de nº de ejecuciones
+  type TextFunction = (repetitions: number, text: string) => string;
+  
+  const repeatText: TextFunction = (repetitions, text) => (
+    count++, `${text} `.repeat(repetitions).trim()
+  );
+  
+  const memoize = (f: TextFunction): TextFunction => {
+    //almacenaremos la combinaciones ya usadas.
+    const values: { [key: string]: string } = {};
+  
+    //se calcula la combinación
+    return (repetitions: number, text: string): string => {
+      const value = `text:${text},repititions:${repetitions}`;
+  
+      //si ya existe se devuelve
+      if (value in values) {
+        return values[value];
+      }
+  
+      //si no existia se calcula.
+      const result = f(repetitions, text);
+      values[value] = result; //se almacena
+      return result;
+    };
+  };
+  
+  const memorizedGreet = memoize(repeatText);
+ </code></pre>
+          <button id="memorizedButton">Mostrar por consola</button>
+        </section>
+      </article>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Tree:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>
+            ¿Cómo generarías con TypeScript un tipado para estructuras en forma
+            de árbol? Un árbol es una estructura que parte de un nodo raiz, a
+            partir del cual salen más nodos. Cada nodo en un árbol puede tener
+            hijos (más nodos) o no tenerlos (convirtiendose en un nodo final o
+            una "hoja").
+          </p>
+          <pre><code class="language-typescript">
+            type Lista&lt;T&gt; = (T | Lista&lt;T&gt;)[];
+          </code></pre>
+          <button id="treeButton">Mostrar por consola</button>
+        </section>
+      </article>
+      <article class="exercise-ts" id="exercise-5">
+        <h3>Understanding:<span>Resuelto con Typescript</span> =></h3>
+        <section>
+          <p>
+            ¿Existe alguna forma de que la expresión `x === x` de como resultado
+            `false`?
+          </p>
+          <pre><code class="language-typescript">
+            const x:number = NaN;
+
+            console.log(x === x); // false
+          </code></pre>
+          <p>
+            Habiendo resuelto la **Cuestión l**, ¿como implementarías una
+            función que compruebe si un determinado valor es `NaN`?
+          </p>
+          <pre><code class="language-typescript">
+            const isNaNValue = (v:number):boolean => isNaN(v);
+
+console.log(isNaNValue(NaN)); // true
+          </code></pre>
+          <p>
+            Habiendo resuelto la **Cuestion 2** ¿Existe alguna forma de que la
+            expresión `!isNaNValue(x) && x !== x` de como resultado `true`?
+          </p>
+          <pre><code class="language-typescript">
+            console.log(!isNaNValue(x) && x !== x); // false
+
+la expresión (!isNaNValue(x)) devuelve false en el caso de que el valor sea NaN. 
+
+mientras que (x !== x) unicamente devuelve true en el caso de que el valor sea NaN. 
+
+Son condiciones incompatibles.
+
+          </code></pre>
+          <p>
+            ¿Podrías dar con alguna forma de que la expresión `x + 1 === x - 1`
+            arroje `true`?
+          </p>
+          <pre><code class="language-typescript">
+            const x = Infinity;
+
+            console.log(x + 1 === x - 1); // true          
+          </code></pre>
+          <p>
+            Se te ocurre alguna forma de hacer que la expresión `x > x` de como
+            resultado `true`?
+          </p>
+          <pre><code class="language-typescript">
+            console.log(x > x); // true  
+            
+            Partiendo de la base de los casos anteriores, el único valor que permite (x!==x) es NaN. 
+            Pero NaN siempre devuelve false en casos de comparación.
+
+          </code></pre>
+          <button id="understandingButton">Mostrar por consola</button>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

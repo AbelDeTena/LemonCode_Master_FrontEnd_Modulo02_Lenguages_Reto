@@ -1,0 +1,58 @@
+//colors
+$mainColor: #f0db4f;
+$secundaryColor: #3178c6;
+$accentColor: #41b883;
+$darkColor: #323330;
+$lightColor: #f4f6f6;
+$gradient: linear-gradient(
+  328deg,
+  lighten($mainColor, 10%),
+  $mainColor,
+  darken($mainColor, 10%)
+);
+
+//fonts
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+
+//sizes
+$header_desktop: 150px;
+$header_tablet: 200px;
+$header_mobile: 425px;
+$mq_max_tablet: 1280px;
+$mq_max_mobile: 682px;
+
+//generic
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+//mixin
+@mixin article-style {
+  padding: 1em;
+  gap: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin section-style {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1em;
+  border-radius: 16px;
+  gap: 8px;
+}
+
+@mixin box-code-style {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(202, 202, 202);
+  border-radius: 16px;
+}
